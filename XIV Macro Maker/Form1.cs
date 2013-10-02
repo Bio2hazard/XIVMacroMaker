@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -57,68 +58,64 @@ namespace WindowsFormsApplication1
                 waitTime = true;
             }
 
-            MatchCollection matches = Regex.Matches(textBox1.Text, "^(.+)$", RegexOptions.Multiline);
+            MatchCollection matches = Regex.Matches(textBox1.Text, @"^(?<Ability>.+?)\r?$", RegexOptions.ECMAScript | RegexOptions.Multiline);
 
             foreach (Match match in matches)
             {
-                // Loop through captures.
-                foreach (Capture capture in match.Captures)
-                {
-                    // Increment the number of lines to account for the captured line
-                    macroLines++;
+                // Increment the number of lines to account for the matched line
+                macroLines++;
 
+                if (waitTime == true)
+                {
+                    // Increment the number of lines to account for the /wait command
+                    macroLines++;
+                }
+
+                if (macroLines <= 14)
+                {
+                    macroBox1Content += "/ac \"" + match.Groups["Ability"].Value + "\" " + targetBox.Text + "\r\n";
                     if (waitTime == true)
                     {
-                        // Increment the number of lines to account for the /wait command
+                        macroBox1Content += "/wait " + waitBox.Text + "\r\n";
+                    }
+
+                    if (macroLines == 14)
+                    {
+                        // Increment the number of lines to account for the final echo message
                         macroLines++;
                     }
-
-                    if (macroLines <= 14)
+                }
+                else if (macroLines <= 29)
+                {
+                    macroBox2Content += "/ac \"" + match.Groups["Ability"].Value + "\" " + targetBox.Text + "\r\n";
+                    if (waitTime == true)
                     {
-                        macroBox1Content += "/ac \"" + capture.Value + "\" " + targetBox.Text + "\r\n";
-                        if (waitTime == true)
-                        {
-                            macroBox1Content += "/wait " + waitBox.Text + "\r\n";
-                        }
+                        macroBox2Content += "/wait " + waitBox.Text + "\r\n";
+                    }
 
-                        if (macroLines == 14)
-                        {
-                            // Increment the number of lines to account for the final echo message
-                            macroLines++;
-                        }
-                    }
-                    else if (macroLines <= 29)
+                    if (macroLines == 29)
                     {
-                        macroBox2Content += "/ac \"" + capture.Value + "\" " + targetBox.Text + "\r\n";
-                        if (waitTime == true)
-                        {
-                            macroBox2Content += "/wait " + waitBox.Text + "\r\n";
-                        }
+                        // Increment the number of lines to account for the final echo message
+                        macroLines++;
+                    }
+                }
+                else if (macroLines <= 44)
+                {
+                    macroBox3Content += "/ac \"" + match.Groups["Ability"].Value + "\" " + targetBox.Text + "\r\n";
+                    if (waitTime == true)
+                    {
+                        macroBox3Content += "/wait " + waitBox.Text + "\r\n";
+                    }
 
-                        if (macroLines == 29)
-                        {
-                            // Increment the number of lines to account for the final echo message
-                            macroLines++;
-                        }
-                    }
-                    else if (macroLines <= 44)
+                    if (macroLines == 44)
                     {
-                        macroBox3Content += "/ac \"" + capture.Value + "\" " + targetBox.Text + "\r\n";
-                        if (waitTime == true)
-                        {
-                            macroBox3Content += "/wait " + waitBox.Text + "\r\n";
-                        }
-
-                        if (macroLines == 44)
-                        {
-                            // Increment the number of lines to account for the final echo message
-                            macroLines++;
-                        }
+                        // Increment the number of lines to account for the final echo message
+                        macroLines++;
                     }
-                    else
-                    {
-                        macroBox4Content += "/ac \"" + capture.Value + "\" " + targetBox.Text + "\r\n/wait " + waitBox.Text + "\r\n";
-                    }
+                }
+                else
+                {
+                    macroBox4Content += "/ac \"" + match.Groups["Ability"].Value + "\" " + targetBox.Text + "\r\n/wait " + waitBox.Text + "\r\n";
                 }
             }
             
