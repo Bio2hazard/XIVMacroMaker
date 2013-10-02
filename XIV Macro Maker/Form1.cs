@@ -58,7 +58,7 @@ namespace WindowsFormsApplication1
                 waitTime = true;
             }
 
-            MatchCollection matches = Regex.Matches(textBox1.Text, @"^(?<Ability>.+?)\r?$", RegexOptions.ECMAScript | RegexOptions.Multiline);
+            MatchCollection matches = Regex.Matches(textBox1.Text, @"^(?<Ability>.+?)\r?$", RegexOptions.Multiline);
 
             foreach (Match match in matches)
             {
